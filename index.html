@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovatech - Hardware & Gaming</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Innovatech Store 🎮💻</h1>
+        <p>Los artículos de hardware más vendidos</p>
+    </header>
+
+    <div class="productos-container" id="lista-productos">
+        <p>Cargando catálogo desde el Backend...</p>
+    </div>
+
+    <script>
+        async function cargarProductos() {
+            try {
+                // Futuro código de tu API:
+                // const response = await fetch('http://<IP-PRIVADA-DE-TU-BACKEND>:8000/productos');
+                // const productos = await response.json();
+
+                // 6 Productos Mockeados con Stock
+                const productos = [
+                    { id: 1, nombre: "Silla Gamer RGB X-Pro", descripcion: "Silla ergonómica reclinable 180°.", precio: 150000, stock: 12, imagen: "https://images.unsplash.com/photo-1598550473307-e83c27184288?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+                    { id: 2, nombre: "Teclado Mecánico Redragon", descripcion: "Switches Blue táctiles, 100% anti-ghosting.", precio: 45000, stock: 8, imagen: "https://images.unsplash.com/photo-1595225476474-87563907a212?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+                    { id: 3, nombre: "Monitor AOC 144Hz", descripcion: "Monitor 24 pulgadas Panel IPS, 1ms respuesta.", precio: 180000, stock: 4, imagen: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+                    { id: 4, nombre: "Mouse Logitech G502", descripcion: "Sensor Hero 25K, 11 botones programables.", precio: 65000, stock: 25, imagen: "https://images.unsplash.com/photo-1615663245857-ac93bb7c3c9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+                    { id: 5, nombre: "Audífonos HyperX Cloud II", descripcion: "Sonido envolvente 7.1, micrófono con cancelación.", precio: 85000, stock: 15, imagen: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+                    { id: 6, nombre: "Tarjeta de Video RTX 4060", descripcion: "8GB GDDR6, Ray Tracing, DLSS 3.", precio: 350000, stock: 2, imagen: "https://images.unsplash.com/photo-1600000492817-200922881fc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" }
+                ];
+
+                const contenedor = document.getElementById('lista-productos');
+                contenedor.innerHTML = '';
+
+                productos.forEach(prod => {
+                    // Agregamos la lógica para mostrar el stock
+                    const card = `
+                        <div class="producto-card">
+                            <img src="${prod.imagen}" alt="${prod.nombre}">
+                            <h3>${prod.nombre}</h3>
+                            <p class="descripcion">${prod.descripcion}</p>
+                            <p class="precio">$${prod.precio.toLocaleString('es-CL')}</p>
+                            <p class="stock">Stock disponible: ${prod.stock} unid.</p>
+                            <button>Añadir al Carro</button>
+                        </div>
+                    `;
+                    contenedor.innerHTML += card;
+                });
+            } catch (error) {
+                console.error("Error al conectar con la API:", error);
+                document.getElementById('lista-productos').innerHTML = '<p>Error de red: No se pudo conectar al servidor.</p>';
+            }
+        }
+
+        cargarProductos();
+    </script>
+</body>
+
+</html>
