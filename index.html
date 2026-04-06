@@ -16,34 +16,30 @@
     </header>
 
     <div class="productos-container" id="lista-productos">
-        <p>Cargando catálogo desde el Backend...</p>
+        <p>Conectando con el servidor de Innovatech...</p>
     </div>
 
     <script>
         async function cargarProductos() {
             try {
-                // Futuro código de tu API:
-                // const response = await fetch('http://<IP-PRIVADA-DE-TU-BACKEND>:8000/productos');
-                // const productos = await response.json();
+                // IMPORTANTE: Cambia 'X.X.X.X' por la IP Elástica de tu EC2-App (Backend)
+                // Usamos el puerto 8000 que es donde corre FastAPI
+                const response = await fetch('http://10.0.2.101:8000/productos');
 
-                // 6 Productos Mockeados con Stock
-                const productos = [
-                    { id: 1, nombre: "Silla Gamer RGB X-Pro", descripcion: "Silla ergonómica reclinable 180°.", precio: 150000, stock: 12, imagen: "https://images.unsplash.com/photo-1598550473307-e83c27184288?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-                    { id: 2, nombre: "Teclado Mecánico Redragon", descripcion: "Switches Blue táctiles, 100% anti-ghosting.", precio: 45000, stock: 8, imagen: "https://images.unsplash.com/photo-1595225476474-87563907a212?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-                    { id: 3, nombre: "Monitor AOC 144Hz", descripcion: "Monitor 24 pulgadas Panel IPS, 1ms respuesta.", precio: 180000, stock: 4, imagen: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-                    { id: 4, nombre: "Mouse Logitech G502", descripcion: "Sensor Hero 25K, 11 botones programables.", precio: 65000, stock: 25, imagen: "https://images.unsplash.com/photo-1615663245857-ac93bb7c3c9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-                    { id: 5, nombre: "Audífonos HyperX Cloud II", descripcion: "Sonido envolvente 7.1, micrófono con cancelación.", precio: 85000, stock: 15, imagen: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-                    { id: 6, nombre: "Tarjeta de Video RTX 4060", descripcion: "8GB GDDR6, Ray Tracing, DLSS 3.", precio: 350000, stock: 2, imagen: "https://images.unsplash.com/photo-1600000492817-200922881fc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" }
-                ];
+                if (!response.ok) {
+                    throw new Error("Error en la respuesta del servidor");
+                }
+
+                const productos = await response.json();
 
                 const contenedor = document.getElementById('lista-productos');
                 contenedor.innerHTML = '';
 
                 productos.forEach(prod => {
-                    // Agregamos la lógica para mostrar el stock
+                    // Usamos prod.imagen_url porque así se llama en la base de datos
                     const card = `
                         <div class="producto-card">
-                            <img src="${prod.imagen}" alt="${prod.nombre}">
+                            <img src="${prod.imagen_url}" alt="${prod.nombre}">
                             <h3>${prod.nombre}</h3>
                             <p class="descripcion">${prod.descripcion}</p>
                             <p class="precio">$${prod.precio.toLocaleString('es-CL')}</p>
@@ -53,12 +49,18 @@
                     `;
                     contenedor.innerHTML += card;
                 });
+
             } catch (error) {
                 console.error("Error al conectar con la API:", error);
-                document.getElementById('lista-productos').innerHTML = '<p>Error de red: No se pudo conectar al servidor.</p>';
+                document.getElementById('lista-productos').innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                        <p style="color: #ff5555; font-weight: bold;">⚠️ Error de conexión con el Backend</p>
+                        <p style="font-size: 0.8em;">Verifica que el contenedor de la API esté corriendo y que el Security Group permita el puerto 8000.</p>
+                    </div>`;
             }
         }
 
+        // Llamamos a la función al cargar la página
         cargarProductos();
     </script>
 </body>
